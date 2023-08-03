@@ -31,10 +31,10 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:Scan
+        - dynamodb:Query
         - dynamodb:PutItem
         - dynamodb:GetItem
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_CREATED_AT_INDEX}
 
   logs:
     # Enable API Gateway logs
