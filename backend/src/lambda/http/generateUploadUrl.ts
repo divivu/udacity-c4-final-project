@@ -1,26 +1,44 @@
+import * as AWS from 'aws-sdk'
 import 'source-map-support/register'
-
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import * as middy from 'middy'
-import { cors, httpErrorHandler } from 'middy/middlewares'
+import { createLogger } from '../../utils/logger'
+// import { createAttachmentPresignedUrl } from '../../helpers/attachmentUtils'
+// import { getUserId } from '../utils'
 
-import { createAttachmentPresignedUrl } from '../../businessLogic/todos'
-import { getUserId } from '../utils'
 
-export const handler = middy(
-  async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const todoId = event.pathParameters.todoId
-    // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
-    
+const logger = createLogger('TodosAccess')
+const bucketName = process.env.ATTACHMENT_S3_BUCKET;
+const urlExpiration = process.env.SIGNED_URL_EXPIRATION;
+const s3 = new AWS.S3({
+  signatureVersion: 'v4'
+});
 
-    return undefined
-  }
-)
+export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  const todoId = event.pathParameters.todoId
 
-handler
-  .use(httpErrorHandler())
-  .use(
-    cors({
-      credentials: true
+  // Return a presigned URL to upload a file for a TODOS item with the provided id
+  logger.info("Generating upload URL:", {
+    todoId: todoId,
+    attachmentId: attachmentId
+  });
+
+  const attachmentId = uuid.v4();
+  const uploadUrl = s3.getSignedUrl('putObject', {
+    Bucket: bucketName,
+    Key: attachmentId,
+    Expires: urlExpiration
+  });
+
+  // await todoAccess.updateTodoAttachmentUrl(todoId, attachmentId);
+
+  return {
+    statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
+    },
+    body: JSON.stringify({
+      uploadUrl: uploadUrl
     })
-  )
+  }
+}

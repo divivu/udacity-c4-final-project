@@ -8,6 +8,7 @@ import {UpdateTodoRequest} from "../requests/UpdateTodoRequest";
 
 // const XAWS = AWSXRay.captureAWS(AWS)
 
+const bucketName = process.env.ATTACHMENT_S3_BUCKET;
 const logger = createLogger('TodosAccess')
 
 // TODO: Implement the dataLayer logic
@@ -77,9 +78,20 @@ export class TodosAccess {
         ":dueDate": updatedTodo.dueDate
       }
     }).promise()
-
     logger.info("Update complete.")
-
   }
 
+  async updateTodoAttachmentUrl(todoId: string, attachmentUrl: string){
+    logger.info(`Updating todoId ${todoId} with attachmentUrl ${attachmentUrl}`)
+    await this.docClient.update({
+      TableName: this.todoTable,
+      Key: {
+        "todoId": todoId
+      },
+      UpdateExpression: "set attachmentUrl = :attachmentUrl",
+      ExpressionAttributeValues: {
+        ":attachmentUrl": `https://${bucketName}.s3.amazonaws.com/${attachmentUrl}`
+      }
+    }).promise();
+  }
 }
