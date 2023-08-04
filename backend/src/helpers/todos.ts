@@ -7,6 +7,7 @@ import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import * as uuid from 'uuid'
 // import * as createError from 'http-errors'
 import { parseUserId } from '../auth/utils'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 
 // TODO: Implement businessLogic
 
@@ -14,6 +15,10 @@ const todoAccess = new TodosAccess()
 
 export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
   return todoAccess.getTodos(userId)
+}
+
+export async function updateTodo(todoId: string, updatedTodo: UpdateTodoRequest): Promise<void> {
+  return todoAccess.updateTodo(todoId, updatedTodo)
 }
 
 export async function createTodo(
