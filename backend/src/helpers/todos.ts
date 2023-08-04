@@ -8,7 +8,7 @@ import * as uuid from 'uuid'
 // import * as createError from 'http-errors'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 
-// TODO: Implement businessLogic
+// Implement businessLogic
 
 const todoAccess = new TodosAccess()
 
@@ -24,17 +24,24 @@ export async function deleteTodo(todoId: string): Promise<void> {
   return todoAccess.deleteTodo(todoId)
 }
 
+/**
+ * Create TodoItem with additional info
+ *
+ * @param userId
+ * @param newTodo
+ */
 export async function createTodo(
   userId: string,
   newTodo: CreateTodoRequest
 ): Promise<TodoItem> {
   const logger = createLogger('createTodo')
-  logger.info('start create ToDo')
-
   const todoId = uuid.v4();
   const newTodoWithAdditionalInfo = {
     userId: userId,
     todoId: todoId,
+    createdAt: new Date().toISOString(),
+    done: false,
+    attachmentUrl: '',
     ...newTodo
   }
 
