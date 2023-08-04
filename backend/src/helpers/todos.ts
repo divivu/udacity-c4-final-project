@@ -3,10 +3,9 @@ import { TodosAccess } from './todosAcess'
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 // import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
-// import { createLogger } from '../utils/logger'
+import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
 // import * as createError from 'http-errors'
-import { parseUserId } from '../auth/utils'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 
 // TODO: Implement businessLogic
@@ -26,19 +25,20 @@ export async function deleteTodo(todoId: string): Promise<void> {
 }
 
 export async function createTodo(
-  createTodoRequest: CreateTodoRequest,
-  jwtToken: string
+  userId: string,
+  newTodo: CreateTodoRequest
 ): Promise<TodoItem> {
-  const itemId = uuid.v4()
-  const userId = parseUserId(jwtToken)
+  const logger = createLogger('createTodo')
+  logger.info('start create ToDo')
 
-  return await todoAccess.createTodo({
+  const todoId = uuid.v4();
+  const newTodoWithAdditionalInfo = {
     userId: userId,
-    todoId: itemId,
-    createdAt: new Date().toISOString(),
-    name: createTodoRequest.name,
-    dueDate: createTodoRequest.dueDate,
-    done: false,
-    attachmentUrl: ''
-  })
+    todoId: todoId,
+    ...newTodo
+  }
+
+  logger.info("Creating new todo item:", newTodoWithAdditionalInfo);
+
+  return await todoAccess.createTodo(newTodoWithAdditionalInfo)
 }

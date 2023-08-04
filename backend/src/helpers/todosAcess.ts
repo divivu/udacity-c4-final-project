@@ -16,7 +16,7 @@ const logger = createLogger('TodosAccess')
 export class TodosAccess {
   constructor(
     private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient(),
-    private readonly todoTable = process.env.TODOITEM_TABLE,
+    private readonly todoTable = process.env.TODOS_TABLE,
     private readonly indexName = process.env.TODOS_CREATED_AT_INDEX,
     ) {
   }
@@ -36,14 +36,14 @@ export class TodosAccess {
     return items as TodoItem[]
   }
 
-  async createTodo(todo: TodoItem): Promise<TodoItem> {
-    logger.info(`Creating new todo item with id ${todo.todoId}`)
+  async createTodo(todoItem): Promise<TodoItem> {
+    logger.info(`Creating new todo item with id ${todoItem.todoId}`)
     await this.docClient.put({
       TableName: this.todoTable,
-      Item: todo
+      Item: todoItem
     }).promise()
 
-    return todo;
+    return todoItem;
   }
 
   async deleteTodo(todoId: string) {
