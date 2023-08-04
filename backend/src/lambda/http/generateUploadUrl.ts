@@ -2,7 +2,6 @@ import * as AWS from 'aws-sdk'
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
-// import { createAttachmentPresignedUrl } from '../../helpers/attachmentUtils'
 import { getUserId } from '../utils'
 import * as uuid from 'uuid'
 

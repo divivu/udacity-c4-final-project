@@ -1,5 +1,4 @@
 import { decode } from 'jsonwebtoken'
-// import {APIGatewayProxyEvent} from "aws-lambda";
 import { JwtPayload } from './JwtPayload'
 
 /**
