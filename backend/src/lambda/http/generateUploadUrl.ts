@@ -4,7 +4,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
 // import { createAttachmentPresignedUrl } from '../../helpers/attachmentUtils'
 // import { getUserId } from '../utils'
-
+import * as uuid from 'uuid'
 
 const logger = createLogger('TodosAccess')
 const bucketName = process.env.ATTACHMENT_S3_BUCKET;
@@ -15,6 +15,7 @@ const s3 = new AWS.S3({
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
+  const attachmentId = uuid.v4();
 
   // Return a presigned URL to upload a file for a TODOS item with the provided id
   logger.info("Generating upload URL:", {
@@ -22,7 +23,6 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     attachmentId: attachmentId
   });
 
-  const attachmentId = uuid.v4();
   const uploadUrl = s3.getSignedUrl('putObject', {
     Bucket: bucketName,
     Key: attachmentId,
