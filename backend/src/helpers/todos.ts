@@ -21,6 +21,10 @@ export async function updateTodo(todoId: string, updatedTodo: UpdateTodoRequest)
   return todoAccess.updateTodo(todoId, updatedTodo)
 }
 
+export async function deleteTodo(todoId: string): Promise<void> {
+  return todoAccess.deleteTodo(todoId)
+}
+
 export async function createTodo(
   createTodoRequest: CreateTodoRequest,
   jwtToken: string

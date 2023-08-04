@@ -45,6 +45,17 @@ export class TodosAccess {
     return todo;
   }
 
+  async deleteTodo(todoId: string) {
+    logger.info("Deleting todo:", {todoId: todoId});
+    await this.docClient.delete({
+      TableName: this.todoTable,
+      Key: {
+        "todoId": todoId
+      }
+    }).promise();
+    logger.info("Delete complete.", {todoId: todoId});
+  }
+
   async updateTodo(todoId: string, updatedTodo: UpdateTodoRequest){
 
     logger.info("Updating todo:", {
