@@ -25,6 +25,7 @@ provider:
   # Use these variables in the functions and resouorces section below. For example, 
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
+    AUTH0_JWKS_URL: https://dev-x0e3feltygewespf.us.auth0.com/.well-known/jwks.json
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
     ATTACHMENT_S3_BUCKET: serverless-c4-todo-images-125897058454-${self:provider.stage}

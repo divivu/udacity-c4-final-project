@@ -50,12 +50,13 @@ export class TodosAccess {
     return todoItem;
   }
 
-  async deleteTodo(todoId: string) {
+  async deleteTodo(todoId: string, userId: string) {
     logger.info("Deleting todo:", {todoId: todoId});
     await this.docClient.delete({
       TableName: this.todoTable,
       Key: {
-        "todoId": todoId
+        userId,
+        todoId
       }
     }).promise();
     logger.info("Delete complete.", {todoId: todoId});
