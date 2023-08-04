@@ -86,12 +86,13 @@ export class TodosAccess {
     logger.info("Update complete.")
   }
 
-  async updateTodoAttachmentUrl(todoId: string, attachmentUrl: string){
+  async updateTodoAttachmentUrl(todoId: string, userId: string, attachmentUrl: string){
     logger.info(`Updating todoId ${todoId} with attachmentUrl ${attachmentUrl}`)
     await this.docClient.update({
       TableName: this.todoTable,
       Key: {
-        "todoId": todoId
+        todoId,
+        userId
       },
       UpdateExpression: "set attachmentUrl = :attachmentUrl",
       ExpressionAttributeValues: {

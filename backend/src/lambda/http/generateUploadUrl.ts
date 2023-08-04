@@ -3,15 +3,18 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
 // import { createAttachmentPresignedUrl } from '../../helpers/attachmentUtils'
-// import { getUserId } from '../utils'
+import { getUserId } from '../utils'
 import * as uuid from 'uuid'
 
-const logger = createLogger('TodosAccess')
+const logger = createLogger('GenerateUploadUrl')
 const bucketName = process.env.ATTACHMENT_S3_BUCKET;
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION;
 const s3 = new AWS.S3({
   signatureVersion: 'v4'
 });
+
+import {TodosAccess} from "../../helpers/todosAcess";
+const todoAccess = new TodosAccess();
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
@@ -26,10 +29,11 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
   const uploadUrl = s3.getSignedUrl('putObject', {
     Bucket: bucketName,
     Key: attachmentId,
-    Expires: urlExpiration
+    Expires: parseInt(urlExpiration)
   });
 
-  // await todoAccess.updateTodoAttachmentUrl(todoId, attachmentId);
+  const userId = getUserId(event);
+  await todoAccess.updateTodoAttachmentUrl(todoId, userId, attachmentId);
 
   return {
     statusCode: 200,
