@@ -58,7 +58,7 @@ export class TodosAccess {
     logger.info("Delete complete.", {todoId: todoId});
   }
 
-  async updateTodo(todoId: string, updatedTodo: UpdateTodoRequest){
+  async updateTodo(todoId: string, userId: string, updatedTodo: UpdateTodoRequest){
 
     logger.info("Updating todo:", {
       todoId: todoId,
@@ -67,7 +67,8 @@ export class TodosAccess {
     await this.docClient.update({
       TableName: this.todoTable,
       Key: {
-        "todoId": todoId
+        todoId,
+        userId
       },
       UpdateExpression: "set #todoName = :name, done = :done, dueDate = :dueDate",
       ExpressionAttributeNames: {
