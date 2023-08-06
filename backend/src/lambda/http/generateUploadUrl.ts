@@ -1,14 +1,16 @@
-import * as AWS from 'aws-sdk'
+import * as AWS from 'aws-sdk';
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
 import { getUserId } from '../utils'
 import * as uuid from 'uuid'
 
+const AWSXRay = require('aws-xray-sdk')
+const XAWS = AWSXRay.captureAWS(AWS);
 const logger = createLogger('GenerateUploadUrl')
 const bucketName = process.env.ATTACHMENT_S3_BUCKET;
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION;
-const s3 = new AWS.S3({
+const s3 = new XAWS.S3({
   signatureVersion: 'v4'
 });
 
